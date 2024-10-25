@@ -11,6 +11,11 @@
     <option name="transferred" value="true" />
   </component>
   <component name="PhpProjectSharedConfiguration" php_language_level="8.3" />
+  <component name="PhpRuntimeConfiguration">
+    <extensions>
+      <extension name="rdkafka" enabled="true" />
+    </extensions>
+  </component>
   <component name="PhpStanOptionsConfiguration">
     <option name="transferred" value="true" />
   </component>
