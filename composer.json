@@ -10,7 +10,9 @@
     ],
     "require": {
         "php": "^8.3",
-        "ext-rdkafka": "*"
+        "ext-rdkafka": "*",
+        "pecee/simple-router": "^5.4",
+        "ext-http": "*"
     },
     "autoload": {
         "psr-4": {
