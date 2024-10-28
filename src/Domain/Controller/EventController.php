@@ -8,15 +8,12 @@ use App\Attributes\ValidateWith;
 use App\Domain\Request\Event\CreateEventRequest;
 use App\Facade\App;
 use App\Model\Event;
+use App\Service\EventService;
+use App\Service\Kafka\KafkaClient;
 use Pecee\SimpleRouter\SimpleRouter;
 
 final readonly class EventController
 {
-    public function __construct()
-    {
-
-    }
-
     #[ValidateWith(CreateEventRequest::class)]
     public function create(): void
     {
@@ -29,6 +26,10 @@ final readonly class EventController
             $input['timestamp'],
             $input['metadata'] ?? []
         );
+
+        $kafkaClient = KafkaClient::getInstance();
+        $eventService = new EventService($kafkaClient);
+        $eventService->process($event);
     }
 
     public function fetch(): void
