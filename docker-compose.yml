@@ -1,0 +1,59 @@
+version: '3.8'
+
+services:
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.0.1
+    platform: linux/amd64
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    networks:
+      - app-network
+
+  kafka:
+    image: confluentinc/cp-kafka:7.0.1
+    platform: linux/amd64
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+    depends_on:
+      - zookeeper
+    networks:
+      - app-network
+    ports:
+      - "9092:9092"
+
+  app:
+    build:
+      context: .
+      dockerfile: docker/app/Dockerfile
+    depends_on:
+      - kafka
+    environment:
+      KAFKA_BROKER: kafka:9092
+    ports:
+      - "8080:8080"
+    networks:
+      - app-network
+
+  akhq:
+    image: tchiotludo/akhq
+    environment:
+      AKHQ_CONFIGURATION: |
+        akhq:
+          connections:
+            local:
+              properties:
+                bootstrap.servers: "kafka:9092"
+    ports:
+      - "8081:8080"
+    networks:
+      - app-network
+    depends_on:
+      - kafka
+networks:
+  app-network:
+    driver: bridge

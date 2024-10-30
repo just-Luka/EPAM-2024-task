@@ -6,5 +6,5 @@ namespace App\Config;
 
 final readonly class BrokerConfig
 {
-    public const string KAFKA = 'localhost:9092';
+    public const string KAFKA = 'kafka:9092';
 }
